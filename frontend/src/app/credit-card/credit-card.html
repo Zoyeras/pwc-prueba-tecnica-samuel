@@ -37,13 +37,13 @@
             <div class="relative">
               <lucide-icon
                 [img]="User"
-                class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
               />
               <input
                 type="text"
                 formControlName="cardHolderName"
                 placeholder="Nombre completo"
-                class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                 [class.border-slate-300]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
                 [class.border-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
                 [class.focus:ring-indigo-500]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
@@ -60,7 +60,7 @@
             <div class="relative">
               <lucide-icon
                 [img]="CardIcon"
-                class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
               />
               <input
                 type="text"
@@ -69,7 +69,7 @@
                 placeholder="4111 1111 1111 1111"
                 maxlength="19"
                 appCardNumber
-                class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                 [class.border-slate-300]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
                 [class.border-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
                 [class.focus:ring-indigo-500]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
@@ -87,7 +87,7 @@
               <div class="relative">
                 <lucide-icon
                   [img]="Calendar"
-                  class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                 />
                 <input
                   type="text"
@@ -96,7 +96,7 @@
                   placeholder="MM/AA"
                   maxlength="7"
                   appExpirationDate
-                  class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                  class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                   [class.border-slate-300]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
                   [class.border-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
                   [class.focus:ring-indigo-500]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
@@ -112,7 +112,7 @@
               <div class="relative">
                 <lucide-icon
                   [img]="Key"
-                  class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                 />
                 <input
                   type="text"
@@ -120,7 +120,7 @@
                   formControlName="cvv"
                   placeholder="123"
                   maxlength="4"
-                  class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                  class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                   [class.border-slate-300]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
                   [class.border-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
                   [class.focus:ring-indigo-500]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
