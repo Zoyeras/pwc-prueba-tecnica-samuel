@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PwcPruebaTecnica.Data;
+using PwcPruebaTecnica.Middleware;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,8 @@ builder.Services.AddOpenApi();
 builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
