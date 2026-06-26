@@ -37,7 +37,10 @@
             <div class="relative">
               <lucide-icon
                 [img]="User"
-                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                [class.text-slate-400]="!fieldValid('cardHolderName')"
+                [class.text-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.text-emerald-500]="fieldValid('cardHolderName')"
               />
               <input
                 type="text"
@@ -46,8 +49,10 @@
                 class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                 [class.border-slate-300]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
                 [class.border-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.border-emerald-500]="fieldValid('cardHolderName')"
                 [class.focus:ring-indigo-500]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
                 [class.focus:ring-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.focus:ring-emerald-500]="fieldValid('cardHolderName')"
               />
             </div>
             @if (fieldError('cardHolderName')) {
@@ -60,7 +65,10 @@
             <div class="relative">
               <lucide-icon
                 [img]="CardIcon"
-                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                [class.text-slate-400]="!fieldValid('cardNumber')"
+                [class.text-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.text-emerald-500]="fieldValid('cardNumber')"
               />
               <input
                 type="text"
@@ -72,8 +80,10 @@
                 class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                 [class.border-slate-300]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
                 [class.border-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.border-emerald-500]="fieldValid('cardNumber')"
                 [class.focus:ring-indigo-500]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
                 [class.focus:ring-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.focus:ring-emerald-500]="fieldValid('cardNumber')"
               />
             </div>
             @if (fieldError('cardNumber')) {
@@ -87,7 +97,10 @@
               <div class="relative">
                 <lucide-icon
                   [img]="Calendar"
-                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                  [class.text-slate-400]="!fieldValid('expirationDate')"
+                  [class.text-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.text-emerald-500]="fieldValid('expirationDate')"
                 />
                 <input
                   type="text"
@@ -99,8 +112,10 @@
                   class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                   [class.border-slate-300]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
                   [class.border-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.border-emerald-500]="fieldValid('expirationDate')"
                   [class.focus:ring-indigo-500]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
                   [class.focus:ring-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.focus:ring-emerald-500]="fieldValid('expirationDate')"
                 />
               </div>
               @if (fieldError('expirationDate')) {
@@ -112,7 +127,10 @@
               <div class="relative">
                 <lucide-icon
                   [img]="Key"
-                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                  [class.text-slate-400]="!fieldValid('cvv')"
+                  [class.text-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.text-emerald-500]="fieldValid('cvv')"
                 />
                 <input
                   type="text"
@@ -123,8 +141,10 @@
                   class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
                   [class.border-slate-300]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
                   [class.border-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.border-emerald-500]="fieldValid('cvv')"
                   [class.focus:ring-indigo-500]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
                   [class.focus:ring-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.focus:ring-emerald-500]="fieldValid('cvv')"
                 />
               </div>
               @if (fieldError('cvv')) {

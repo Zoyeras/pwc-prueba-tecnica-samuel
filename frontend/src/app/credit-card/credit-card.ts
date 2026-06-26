@@ -155,6 +155,11 @@ export class CreditCard implements OnInit {
     return `${mm}/${yy}`;
   }
 
+  fieldValid(field: string): boolean {
+    const control = this.form.get(field);
+    return control != null && control.touched && control.valid;
+  }
+
   fieldError(field: string): string {
     const control = this.form.get(field);
     if (!control || !control.touched || !control.errors) {
