@@ -20,4 +20,7 @@ public class Card
     [Required]
     [StringLength(4, MinimumLength = 3)]
     public required string Cvv { get; set; } = string.Empty;
+    
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
 }
