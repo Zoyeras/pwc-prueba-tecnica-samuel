@@ -203,7 +203,7 @@
                       </div>
                     </td>
                     <td class="py-3 px-2 font-mono text-sm whitespace-nowrap">{{ formatCardNumber(card.cardNumber) }}</td>
-                    <td class="py-3 px-2 text-sm">{{ card.expirationDate | date: 'MM/yyyy' }}</td>
+                    <td class="py-3 px-2 text-sm whitespace-nowrap">{{ card.expirationDate | date: 'MM/yy' }}</td>
                     <td class="py-3 px-2">
                       <div class="flex items-center justify-end gap-1">
                         <button

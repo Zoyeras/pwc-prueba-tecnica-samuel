@@ -151,8 +151,8 @@ export class CreditCard implements OnInit {
   private formatExpirationFromIso(iso: string): string {
     const d = new Date(iso);
     const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const yyyy = d.getFullYear();
-    return `${mm}/${yyyy}`;
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${mm}/${yy}`;
   }
 
   fieldError(field: string): string {
