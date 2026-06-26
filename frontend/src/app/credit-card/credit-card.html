@@ -29,7 +29,7 @@
           <h2 class="text-xl font-semibold text-slate-800">Agregar tarjeta</h2>
         </div>
 
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4" novalidate>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Titular</label>
             <div class="relative">
@@ -41,9 +41,17 @@
                 type="text"
                 formControlName="cardHolderName"
                 placeholder="Nombre completo"
-                class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition"
+                [class.border-slate-300]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
+                [class.border-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.focus:ring-indigo-500]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
+                [class.focus:ring-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.focus:border-transparent]="true"
               />
             </div>
+            @if (fieldError('cardHolderName')) {
+              <p class="text-xs text-red-600 mt-1">{{ fieldError('cardHolderName') }}</p>
+            }
           </div>
 
           <div>
@@ -55,12 +63,21 @@
               />
               <input
                 type="text"
+                inputmode="numeric"
                 formControlName="cardNumber"
-                placeholder="4111111111111111"
+                placeholder="4111 1111 1111 1111"
                 maxlength="19"
-                class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                appCardNumber
+                class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                [class.border-slate-300]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
+                [class.border-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.focus:ring-indigo-500]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
+                [class.focus:ring-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
               />
             </div>
+            @if (fieldError('cardNumber')) {
+              <p class="text-xs text-red-600 mt-1">{{ fieldError('cardNumber') }}</p>
+            }
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -73,12 +90,21 @@
                 />
                 <input
                   type="text"
+                  inputmode="numeric"
                   formControlName="expirationDate"
-                  placeholder="MM/AAAA"
+                  placeholder="MM/AA"
                   maxlength="7"
-                  class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                  appExpirationDate
+                  class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                  [class.border-slate-300]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
+                  [class.border-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.focus:ring-indigo-500]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
+                  [class.focus:ring-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
                 />
               </div>
+              @if (fieldError('expirationDate')) {
+                <p class="text-xs text-red-600 mt-1">{{ fieldError('expirationDate') }}</p>
+              }
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1">CVV</label>
@@ -89,19 +115,28 @@
                 />
                 <input
                   type="text"
+                  inputmode="numeric"
                   formControlName="cvv"
                   placeholder="123"
                   maxlength="4"
-                  class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                  class="w-full pl-10 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                  [class.border-slate-300]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
+                  [class.border-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.focus:ring-indigo-500]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
+                  [class.focus:ring-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
                 />
               </div>
+              @if (fieldError('cvv')) {
+                <p class="text-xs text-red-600 mt-1">{{ fieldError('cvv') }}</p>
+              }
             </div>
           </div>
 
           <button
             type="submit"
-            [disabled]="form.invalid"
-            class="mt-2 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+            [class.opacity-50]="form.invalid"
+            [class.cursor-not-allowed]="form.invalid"
+            class="mt-2 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 active:bg-indigo-800 transition shadow-sm"
           >
             <lucide-icon [img]="Database" class="w-4 h-4" />
             Guardar tarjeta

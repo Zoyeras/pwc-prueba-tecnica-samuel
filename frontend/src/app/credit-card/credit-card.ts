@@ -15,11 +15,19 @@ import {
 } from 'lucide-angular';
 
 import { CardsService } from '../services/cards.service';
+import { CardNumberFormatDirective } from '../directives/card-number-format.directive';
+import { ExpirationDateFormatDirective } from '../directives/expiration-date-format.directive';
 import type { Card, CardCreate } from '../models/card.model';
 
 @Component({
   selector: 'app-credit-card',
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LucideAngularModule,
+    CardNumberFormatDirective,
+    ExpirationDateFormatDirective,
+  ],
   templateUrl: './credit-card.html',
   styleUrl: './credit-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,14 +53,14 @@ export class CreditCard implements OnInit {
 
   readonly form: FormGroup = this.fb.group({
     cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
-    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{13,19}$/)]],
+    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4} \d{4} \d{4} \d{4}$/)]],
     expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/)]],
     cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
   });
 
   readonly editForm: FormGroup = this.fb.group({
     cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
-    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{13,19}$/)]],
+    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4} \d{4} \d{4} \d{4}$/)]],
     expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/)]],
     cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
   });
@@ -98,7 +106,7 @@ export class CreditCard implements OnInit {
     const exp = this.formatExpirationFromIso(card.expirationDate);
     this.editForm.patchValue({
       cardHolderName: card.cardHolderName,
-      cardNumber: card.cardNumber.replace(/\s+/g, ''),
+      cardNumber: this.formatCardNumber(card.cardNumber),
       expirationDate: exp,
       cvv: card.cvv,
     });
@@ -153,6 +161,32 @@ export class CreditCard implements OnInit {
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const yyyy = d.getFullYear();
     return `${mm}/${yyyy}`;
+  }
+
+  private formatCardNumber(raw: string): string {
+    return raw.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  fieldError(field: string): string {
+    const control = this.form.get(field);
+    if (!control || !control.touched || !control.errors) {
+      return '';
+    }
+    const errors = control.errors;
+    if (errors['required']) return 'Este campo es obligatorio';
+    if (errors['minlength']) {
+      return `Mínimo ${errors['minlength'].requiredLength} caracteres`;
+    }
+    if (errors['pattern']) {
+      return field === 'cardHolderName'
+        ? 'Mínimo 3 caracteres'
+        : field === 'cardNumber'
+          ? 'Debe tener 16 dígitos (XXXX XXXX XXXX XXXX)'
+          : field === 'expirationDate'
+            ? 'Formato MM/AA o MM/AAAA'
+            : 'CVV debe tener 3 o 4 dígitos';
+    }
+    return 'Campo inválido';
   }
 
   private extractError(err: unknown, fallback: string): string {
