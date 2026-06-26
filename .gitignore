@@ -23,7 +23,3 @@ pnpm-debug.log*
 .idea/
 *.swp
 .DS_Store
-
-# Docker
-**/Dockerfile
-**/.dockerignore
