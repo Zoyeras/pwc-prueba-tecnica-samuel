@@ -10,6 +10,7 @@ public class CardUpdateDto
 
     [Required]
     [StringLength(19, MinimumLength = 13)]
+    [RegularExpression(@"^\d+$", ErrorMessage = "CardNumber must contain only digits.")]
     public string CardNumber { get; set; } = string.Empty;
 
     [Required]
@@ -17,5 +18,6 @@ public class CardUpdateDto
 
     [Required]
     [StringLength(4, MinimumLength = 3)]
+    [RegularExpression(@"^\d+$", ErrorMessage = "Cvv must contain only digits.")]
     public string Cvv { get; set; } = string.Empty;
 }
