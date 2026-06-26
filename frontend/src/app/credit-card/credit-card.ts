@@ -46,14 +46,14 @@ export class CreditCard implements OnInit {
   readonly form: FormGroup = this.fb.group({
     cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
     cardNumber: ['', [Validators.required, Validators.pattern(/^\d{13,19}$/)]],
-    expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(20)\d{2}$/)]],
+    expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/)]],
     cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
   });
 
   readonly editForm: FormGroup = this.fb.group({
     cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
     cardNumber: ['', [Validators.required, Validators.pattern(/^\d{13,19}$/)]],
-    expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(20)\d{2}$/)]],
+    expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/)]],
     cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
   });
 
@@ -138,11 +138,12 @@ export class CreditCard implements OnInit {
 
   private toPayload(group: FormGroup): CardCreate {
     const raw = group.value;
-    const [mm, yyyy] = String(raw.expirationDate).split('/');
+    const [mm, yearRaw] = String(raw.expirationDate).split('/');
+    const yearNum = yearRaw.length === 2 ? 2000 + Number(yearRaw) : Number(yearRaw);
     return {
       cardHolderName: raw.cardHolderName,
       cardNumber: String(raw.cardNumber).replace(/\s+/g, ''),
-      expirationDate: new Date(Number(yyyy), Number(mm) - 1, 1).toISOString(),
+      expirationDate: new Date(yearNum, Number(mm) - 1, 1).toISOString(),
       cvv: raw.cvv,
     };
   }
