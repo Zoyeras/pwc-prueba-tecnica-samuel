@@ -1,64 +1,99 @@
 # CRUD Udemy — Angular 21 + .NET 10 + SQL Server 2022
 
-Stack completo en Docker: base de datos, API y frontend.
+CRUD de tarjetas de crédito. Stack completo dentro de Docker: SQL Server, API .NET y frontend Angular servidos por nginx.
 
 ## Requisitos
 
 - Docker 24+ y Docker Compose v2
-- El proyecto .NET debe estar en `backend/` con un `.csproj` llamado `api.csproj`
-- El proyecto Angular debe estar en `frontend/` con un `package.json`
+- (Nada más — no hace falta .NET SDK, ni Node, ni Angular CLI en la máquina)
 
-## Bootstrap del proyecto (solo la primera vez)
-
-```bash
-# Backend
-cd backend
-dotnet new webapi -n api -o . --framework net10.0
-cd ..
-
-# Frontend
-cd frontend
-npx -p @angular/cli@21 ng new app --directory=. --routing --style=css --skip-git --package-manager=npm
-cd ..
-```
-
-## Levantar entorno
+## Levantar el proyecto
 
 ```bash
 cp .env.example .env
-# editar .env y poner una contraseña fuerte en MSSQL_SA_PASSWORD
-
 docker compose up -d --build
 ```
 
-| Servicio  | URL                      |
-|-----------|--------------------------|
-| Frontend  | http://localhost:4200    |
-| Backend   | http://localhost:8080    |
-| SQL Server| localhost:1433 (sa / .env) |
+Espera unos 60-90 segundos. Verifica con:
 
-## Proxy del frontend
-
-El `nginx.conf` enruta `/api/*` al backend (`http://backend:8080`). En Angular usa rutas relativas:
-
-```ts
-this.http.get('/api/productos');
+```bash
+docker compose ps
 ```
 
-Si prefieres que el backend NO reciba el prefijo `/api`, cambia en `frontend/nginx.conf`:
+Los tres servicios deben estar `running (healthy)`.
 
-```nginx
-location /api/ {
-    proxy_pass http://backend:8080/;   # con barra final: strip /api
-}
-```
+## URLs
+
+| Servicio | URL | Notas |
+|---|---|---|
+| Frontend (Angular) | http://localhost:4200 | UI del CRUD |
+| Backend API | http://localhost:8080/api/cards | Endpoints REST |
+| API interactiva (Scalar) | http://localhost:8080/scalar/v1 | Probar endpoints sin curl |
+| SQL Server | `localhost:1433` | User `sa`, password la del `.env` |
 
 ## Comandos útiles
 
 ```bash
-docker compose logs -f backend
-docker compose logs -f sqlserver
-docker compose down                 # parar contenedores
-docker compose down -v              # parar y borrar volumen de SQL Server
-docker compose exec sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -No -Q "SELECT name FROM sys.databases"
+docker compose ps                              # estado de los 3 servicios
+docker compose logs -f backend                 # logs en vivo del backend
+docker compose logs -f frontend                # logs en vivo de nginx/angular
+docker compose restart backend                # reiniciar solo el backend
+docker compose down                            # parar los 3 contenedores
+docker compose down -v                         # parar y borrar el volumen de la DB
+
+# Conectarse a SQL Server desde el host
+docker exec -it crud-sqlserver /opt/mssql-tools18/bin/sqlcmd \
+  -S localhost -U sa -P "$(grep MSSQL_SA_PASSWORD .env | cut -d= -f2)" -No \
+  -Q "SELECT * FROM Cards"
 ```
+
+## Estructura del repositorio
+
+```
+.
+├── backend/                          # .NET 10 Web API + EF Core
+│   ├── Dockerfile
+│   └── PwcPruebaTecnica/
+│       └── PwcPruebaTecnica/
+│           ├── Controllers/CardsController.cs
+│           ├── Data/ApplicationDbContext.cs
+│           ├── Dtos/CardCreateDto.cs / CardUpdateDto.cs / CardResponseDto.cs
+│           ├── Middleware/ErrorHandlingMiddleware.cs
+│           ├── Migrations/
+│           ├── Models/Card.cs
+│           └── Program.cs
+├── frontend/                         # Angular 21 standalone
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── proxy.conf.json
+│   └── src/app/
+│       ├── models/card.model.ts
+│       ├── services/cards.service.ts
+│       ├── directives/card-number-format.directive.ts
+│       ├── directives/expiration-date-format.directive.ts
+│       └── credit-card/credit-card.ts / credit-card.html
+├── docker-compose.yml
+├── .env.example
+├── AGENTS.md                         # reglas del proyecto (no tocar)
+└── guion.md                          # guion para grabar un video demo
+```
+
+## Flujo de los datos
+
+```
+navegador (localhost:4200)
+  └─► nginx (puerto 80 interno)
+        └─► /api/* → backend:8080
+              └─► ApplicationDbContext (EF Core)
+                    └─► sqlserver:1433
+```
+
+El frontend hace `this.http.get('/api/cards')` y el proxy de nginx lo redirige al backend dentro de la red de Docker.
+
+## Troubleshooting
+
+- **"docker: command not found"** → instala Docker Desktop o `docker` + `docker-compose-plugin` desde tu package manager.
+- **"port 4200/8080/1433 is already in use"** → cambia los puertos en `docker-compose.yml` o para el proceso que los ocupa.
+- **El backend no arranca** → revisa `docker compose logs backend`. Lo más común es que la password del `.env` no coincida con la de SQL Server (tienen que estar sincronizadas).
+- **"Cards table doesn't exist"** → las migraciones se aplican al primer request. Si quieres forzar: `docker compose restart backend`.
+- **Cambios en el código no se ven** → `docker compose up -d --build backend` (o `frontend`) para reconstruir la imagen.
