@@ -1,0 +1,257 @@
+<div class="min-h-screen p-6 md:p-10">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl font-bold text-slate-800 tracking-tight">Tarjetas de Crédito</h1>
+    </div>
+
+    @if (errorMessage()) {
+      <div
+        class="mb-6 max-w-3xl mx-auto bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between"
+        role="alert"
+      >
+        <span>{{ errorMessage() }}</span>
+        <button
+          type="button"
+          (click)="errorMessage.set(null)"
+          class="text-red-500 hover:text-red-700"
+        >
+          <lucide-icon [img]="X" class="w-4 h-4" />
+        </button>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-lg p-6 md:p-8">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+            <lucide-icon [img]="CardIcon" class="w-5 h-5 text-indigo-600" />
+          </div>
+          <h2 class="text-xl font-semibold text-slate-800">
+            {{ editingId() !== null ? 'Editar Tarjeta' : 'Agregar tarjeta' }}
+          </h2>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4" novalidate>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Titular</label>
+            <div class="relative">
+              <lucide-icon
+                [img]="User"
+                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                [class.text-slate-400]="!fieldValid('cardHolderName')"
+                [class.text-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.text-emerald-500]="fieldValid('cardHolderName')"
+              />
+              <input
+                type="text"
+                formControlName="cardHolderName"
+                placeholder="Nombre completo"
+                class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                [class.border-slate-300]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
+                [class.border-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.border-emerald-500]="fieldValid('cardHolderName')"
+                [class.focus:ring-indigo-500]="!form.controls['cardHolderName'].touched || !form.controls['cardHolderName'].invalid"
+                [class.focus:ring-red-400]="form.controls['cardHolderName'].touched && form.controls['cardHolderName'].invalid"
+                [class.focus:ring-emerald-500]="fieldValid('cardHolderName')"
+              />
+            </div>
+            @if (fieldError('cardHolderName')) {
+              <p class="text-xs text-red-600 mt-1">{{ fieldError('cardHolderName') }}</p>
+            }
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Número de tarjeta</label>
+            <div class="relative">
+              <lucide-icon
+                [img]="CardIcon"
+                class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                [class.text-slate-400]="!fieldValid('cardNumber')"
+                [class.text-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.text-emerald-500]="fieldValid('cardNumber')"
+              />
+              <input
+                type="text"
+                inputmode="numeric"
+                formControlName="cardNumber"
+                placeholder="4111 1111 1111 1111"
+                maxlength="19"
+                appCardNumber
+                class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                [class.border-slate-300]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
+                [class.border-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.border-emerald-500]="fieldValid('cardNumber')"
+                [class.focus:ring-indigo-500]="!form.controls['cardNumber'].touched || !form.controls['cardNumber'].invalid"
+                [class.focus:ring-red-400]="form.controls['cardNumber'].touched && form.controls['cardNumber'].invalid"
+                [class.focus:ring-emerald-500]="fieldValid('cardNumber')"
+              />
+            </div>
+            @if (fieldError('cardNumber')) {
+              <p class="text-xs text-red-600 mt-1">{{ fieldError('cardNumber') }}</p>
+            }
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Vencimiento</label>
+              <div class="relative">
+                <lucide-icon
+                  [img]="Calendar"
+                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                  [class.text-slate-400]="!fieldValid('expirationDate')"
+                  [class.text-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.text-emerald-500]="fieldValid('expirationDate')"
+                />
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  formControlName="expirationDate"
+                  placeholder="MM/AA"
+                  maxlength="7"
+                  appExpirationDate
+                  class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                  [class.border-slate-300]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
+                  [class.border-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.border-emerald-500]="fieldValid('expirationDate')"
+                  [class.focus:ring-indigo-500]="!form.controls['expirationDate'].touched || !form.controls['expirationDate'].invalid"
+                  [class.focus:ring-red-400]="form.controls['expirationDate'].touched && form.controls['expirationDate'].invalid"
+                  [class.focus:ring-emerald-500]="fieldValid('expirationDate')"
+                />
+              </div>
+              @if (fieldError('expirationDate')) {
+                <p class="text-xs text-red-600 mt-1">{{ fieldError('expirationDate') }}</p>
+              }
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">CVV</label>
+              <div class="relative">
+                <lucide-icon
+                  [img]="Key"
+                  class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                  [class.text-slate-400]="!fieldValid('cvv')"
+                  [class.text-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.text-emerald-500]="fieldValid('cvv')"
+                />
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  formControlName="cvv"
+                  placeholder="123"
+                  maxlength="4"
+                  class="w-full pl-12 pr-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition"
+                  [class.border-slate-300]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
+                  [class.border-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.border-emerald-500]="fieldValid('cvv')"
+                  [class.focus:ring-indigo-500]="!form.controls['cvv'].touched || !form.controls['cvv'].invalid"
+                  [class.focus:ring-red-400]="form.controls['cvv'].touched && form.controls['cvv'].invalid"
+                  [class.focus:ring-emerald-500]="fieldValid('cvv')"
+                />
+              </div>
+              @if (fieldError('cvv')) {
+                <p class="text-xs text-red-600 mt-1">{{ fieldError('cvv') }}</p>
+              }
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              type="submit"
+              [class.opacity-50]="form.invalid"
+              [class.cursor-not-allowed]="form.invalid"
+              class="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 active:bg-indigo-800 transition shadow-sm"
+            >
+              <lucide-icon [img]="Database" class="w-4 h-4" />
+              {{ editingId() !== null ? 'Guardar edición de tarjeta' : 'Guardar tarjeta' }}
+            </button>
+            @if (editingId() !== null) {
+              <button
+                type="button"
+                (click)="cancelEdit()"
+                class="flex items-center justify-center gap-2 bg-slate-200 text-slate-700 py-2.5 px-5 rounded-lg font-medium hover:bg-slate-300 active:bg-slate-400 transition"
+              >
+                Cancelar
+              </button>
+            }
+          </div>
+        </form>
+      </div>
+
+      <div class="bg-gradient-to-br from-white to-emerald-50 rounded-2xl shadow-lg p-6 md:p-8">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+              <lucide-icon [img]="CardIcon" class="w-5 h-5 text-emerald-600" />
+            </div>
+            <h2 class="text-xl font-semibold text-slate-800">Listado</h2>
+          </div>
+          <span class="text-sm text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+            {{ cards().length }} tarjeta(s)
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          @if (loading()) {
+            <p class="text-center text-slate-500 py-6">Cargando…</p>
+          } @else if (cards().length === 0) {
+            <p class="text-center text-slate-500 py-6">No hay tarjetas registradas.</p>
+          } @else {
+            <table class="w-full text-slate-700">
+              <thead>
+                <tr
+                  class="text-left text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200"
+                >
+                  <th class="pb-3 px-2 font-semibold">Titular</th>
+                  <th class="pb-3 px-2 font-semibold">Número</th>
+                  <th class="pb-3 px-2 font-semibold">Vence</th>
+                  <th class="pb-3 px-2 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (card of cards(); track card.id) {
+                  <tr
+                    class="border-b border-slate-100 hover:bg-slate-50 transition"
+                    [class.bg-indigo-50]="editingId() === card.id"
+                  >
+                    <td class="py-3 px-2">
+                      <div class="flex items-center gap-2">
+                        <div
+                          class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold"
+                        >
+                          {{ card.cardHolderName.charAt(0) }}
+                        </div>
+                        <span class="font-medium">{{ card.cardHolderName }}</span>
+                      </div>
+                    </td>
+                    <td class="py-3 px-2 font-mono text-sm whitespace-nowrap">{{ formatCardNumber(card.cardNumber) }}</td>
+                    <td class="py-3 px-2 text-sm whitespace-nowrap">{{ card.expirationDate | date: 'MM/yy' }}</td>
+                    <td class="py-3 px-2">
+                      <div class="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          (click)="startEdit(card)"
+                          [disabled]="editingId() === card.id"
+                          class="p-1.5 rounded-md text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                          title="Editar"
+                        >
+                          <lucide-icon [img]="Pencil" class="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          (click)="deleteCard(card.id)"
+                          class="p-1.5 rounded-md text-slate-500 hover:bg-red-50 hover:text-red-600 transition"
+                          title="Eliminar"
+                        >
+                          <lucide-icon [img]="Trash2" class="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
