@@ -10,7 +10,6 @@ import {
   Calendar,
   Key,
   Database,
-  Save,
   X,
 } from 'lucide-angular';
 
@@ -43,7 +42,6 @@ export class CreditCard implements OnInit {
   readonly Calendar = Calendar;
   readonly Key = Key;
   readonly Database = Database;
-  readonly Save = Save;
   readonly X = X;
 
   readonly cards = signal<Card[]>([]);
@@ -52,13 +50,6 @@ export class CreditCard implements OnInit {
   readonly editingId = signal<number | null>(null);
 
   readonly form: FormGroup = this.fb.group({
-    cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
-    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4} \d{4} \d{4} \d{4}$/)]],
-    expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/)]],
-    cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
-  });
-
-  readonly editForm: FormGroup = this.fb.group({
     cardHolderName: ['', [Validators.required, Validators.minLength(3)]],
     cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4} \d{4} \d{4} \d{4}$/)]],
     expirationDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/)]],
@@ -90,58 +81,59 @@ export class CreditCard implements OnInit {
       return;
     }
     const payload = this.toPayload(this.form);
-    this.cardsService.create(payload).subscribe({
+    const id = this.editingId();
+
+    const obs = id === null
+      ? this.cardsService.create(payload)
+      : this.cardsService.update(id, payload);
+
+    const fallback = id === null
+      ? 'No se pudo crear la tarjeta.'
+      : 'No se pudo actualizar la tarjeta.';
+
+    obs.subscribe({
       next: () => {
+        this.editingId.set(null);
         this.form.reset();
         this.loadCards();
       },
       error: (err) => {
-        this.errorMessage.set(this.extractError(err, 'No se pudo crear la tarjeta.'));
+        this.errorMessage.set(this.extractError(err, fallback));
       },
     });
   }
 
   startEdit(card: Card): void {
     this.editingId.set(card.id);
-    const exp = this.formatExpirationFromIso(card.expirationDate);
-    this.editForm.patchValue({
+    this.form.patchValue({
       cardHolderName: card.cardHolderName,
       cardNumber: this.formatCardNumber(card.cardNumber),
-      expirationDate: exp,
+      expirationDate: this.formatExpirationFromIso(card.expirationDate),
       cvv: card.cvv,
     });
+    this.form.markAsPristine();
+    document.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   cancelEdit(): void {
     this.editingId.set(null);
-    this.editForm.reset();
-  }
-
-  saveEdit(id: number): void {
-    if (this.editForm.invalid) {
-      this.editForm.markAllAsTouched();
-      return;
-    }
-    const payload = this.toPayload(this.editForm);
-    this.cardsService.update(id, payload).subscribe({
-      next: () => {
-        this.editingId.set(null);
-        this.editForm.reset();
-        this.loadCards();
-      },
-      error: (err) => {
-        this.errorMessage.set(this.extractError(err, 'No se pudo actualizar la tarjeta.'));
-      },
-    });
+    this.form.reset();
   }
 
   deleteCard(id: number): void {
+    if (this.editingId() === id) {
+      this.cancelEdit();
+    }
     this.cardsService.delete(id).subscribe({
       next: () => this.loadCards(),
       error: (err) => {
         this.errorMessage.set(this.extractError(err, 'No se pudo eliminar la tarjeta.'));
       },
     });
+  }
+
+  formatCardNumber(raw: string): string {
+    return raw.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
   }
 
   private toPayload(group: FormGroup): CardCreate {
@@ -161,10 +153,6 @@ export class CreditCard implements OnInit {
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const yyyy = d.getFullYear();
     return `${mm}/${yyyy}`;
-  }
-
-  private formatCardNumber(raw: string): string {
-    return raw.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
   }
 
   fieldError(field: string): string {
