@@ -8,5 +8,5 @@ public class CardResponseDto
     public DateTime ExpirationDate { get; set; }
     public string Cvv { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
